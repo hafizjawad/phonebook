@@ -1,8 +1,15 @@
-import express, { Request, Response } from "express";
-import { DataSource } from "typeorm";
+import express from "express";
 const cors = require('cors');
-import { user } from "./entity/user";
-import { phonebook } from "./entity/phonebook";
+
+const loginRoute = require('./Routes/User/loginRoute');
+const registerRoute = require('./Routes/User/registerRoute');
+const getDataRoute = require("./Routes/User/getDataRoute");
+const addNumberRoute = require("./Routes/phonebook/addNumberRoute")
+const deleteRoute = require("./Routes/phonebook/deleteRoute");
+const getPhoneRoute = require("./Routes/phonebook/getPhoneRoute");
+const updateRoute = require("./Routes/phonebook/updateRoute");
+
+import { db } from "./database";
 
 const app = express();
 app.use(cors());
@@ -10,30 +17,17 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 
-export const myDataSource = new DataSource({
-  type: "mysql",
-  host: "localhost",
-  port: 3306,
-  username: "root",
-  password: "password",
-  database: "phonebook",
-  synchronize: true,
-  entities: ['./entity/*.ts'],
- 
-});
-
-const userRepo = myDataSource.getRepository(user);
-const phonebookRepo = myDataSource.getRepository(phonebook);
-
-myDataSource
-  .initialize()
-  .then(() => {
-    console.log("Database Connected Successfully..!!");
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+const db1 = new db();
+export const myDb = db1.dbCon();
 
 app.listen(8000, () => {
   console.log("Server is running on port no 8000");
 });
+
+app.use("/login", loginRoute);
+app.use("/register", registerRoute);
+app.use("/api/get", getDataRoute);
+app.use("/api/post", addNumberRoute);
+app.use("/api/delete", deleteRoute);
+app.use("/api/getphone", getPhoneRoute);
+app.use("/api/update", updateRoute);
