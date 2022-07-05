@@ -3,8 +3,9 @@ import { phonebook } from "../../entity/phonebook";
 const router = express.Router();
 import {myDb} from "../../index";
 
-router.post("/", async (req: Request, res: Response) => {
-    const { id, name, phoneno } = req.body;
+router.post("/",  async (req: Request, res: Response) => {
+      const { id, name, phoneno,file } = req.body;
+      console.log("File Upload", file);
     let id1 = parseInt(id);
     console.log("name & phoneno from post", id, name, phoneno);
     let find =  await myDb.getRepository(phonebook).findOne({

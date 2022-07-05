@@ -1,5 +1,6 @@
 import express from "express";
 const cors = require('cors');
+const router = express.Router();
 
 const loginRoute = require('./Routes/User/loginRoute');
 const registerRoute = require('./Routes/User/registerRoute');
@@ -8,6 +9,9 @@ const addNumberRoute = require("./Routes/phonebook/addNumberRoute")
 const deleteRoute = require("./Routes/phonebook/deleteRoute");
 const getPhoneRoute = require("./Routes/phonebook/getPhoneRoute");
 const updateRoute = require("./Routes/phonebook/updateRoute");
+
+const {checkUserAuth} = require ("./jwt/JWT");
+
 
 import { db } from "./database";
 
@@ -26,8 +30,8 @@ app.listen(8000, () => {
 
 app.use("/login", loginRoute);
 app.use("/register", registerRoute);
-app.use("/api/get", getDataRoute);
-app.use("/api/post", addNumberRoute);
+app.use("/api/get",checkUserAuth, getDataRoute);
+app.use("/api/post",  addNumberRoute);
 app.use("/api/delete", deleteRoute);
 app.use("/api/getphone", getPhoneRoute);
 app.use("/api/update", updateRoute);

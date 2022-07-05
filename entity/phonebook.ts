@@ -11,8 +11,8 @@ export class phonebook extends BaseEntity{
 
     @Column({ unique: true })
     phoneno: string;
-    
 
+ 
     @Column()
     userId: number;
 
