@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { user } from "../../entity/user"
 import {myDb} from "../../index";
-const {createTokens} = require ("../../jwt/JWT");
+const fs = require('fs');
 
 const express = require('express')
 const router = express.Router();
@@ -9,7 +9,14 @@ const router = express.Router();
 
 router.post("/", async (req: Request, res: Response) =>{
   console.log("hello from register");
-    const {name,email,password} = req.body;
+     
+    const {name = req.body.user.name, email = req.body.user.email, password = req.body.user.password, postImage = req.body.postImage} = req.body;
+    console.log("name", name);
+    const path = './public/uploads/'+Date.now()+'.png'
+    const base64Data = postImage.image.toString().replace(/^data:([A-Za-z-+/]+);base64,/, '');
+    fs.writeFileSync(path, base64Data,  {encoding: 'base64'});
+    const pathForDb = path.replace('./public/','/');
+
     let find =  await myDb.getRepository(user).findOne({
       where: {
         email: email
@@ -23,6 +30,7 @@ router.post("/", async (req: Request, res: Response) =>{
         name: name,
         email: email,
         password: password,
+        image: pathForDb,
         
     }).then(async () => {
       
@@ -30,8 +38,8 @@ router.post("/", async (req: Request, res: Response) =>{
         where: {
           email: email
         }})
-        const accessToken = await createTokens(regUser?.id);       
-      res.send({ message: "Successfully Registered", token: accessToken});
+              
+      res.send({ message: "Successfully Registered"});
       console.log("Data Inserted Successfully..!!")
     }).catch(()=> {
       console.log("Data not insrted..!!")

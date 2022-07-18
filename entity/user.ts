@@ -15,6 +15,9 @@ export class user extends BaseEntity{
     @Column()
     password: string;
 
+    @Column()
+    image: string;
+
     @OneToMany(() => phonebook, (phonebook)=>phonebook.user)
     phonebook: phonebook;
 
